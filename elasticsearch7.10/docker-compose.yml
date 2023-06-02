@@ -1,0 +1,28 @@
+version: "3"
+services:
+
+  elasticsearch:
+    image: elasticsearch:7.10.1 # Apache License 2.0 协议的最后一个版本
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - "discovery.type=single-node"
+      - "xpack.security.enabled=false"
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
+
+  kibana:
+    container_name: kibana
+    image: kibana:7.10.1
+    platform: linux/x86_64
+    restart: always
+    environment:
+      - "xpack.security.enabled=false"
+      - 'ELASTICSEARCH_HOSTS=["http://elasticsearch:9200"]'
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
